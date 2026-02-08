@@ -25,6 +25,7 @@ $$
 ### 感知机的数学推导
 
 设
+
 $$
 g(\mathbf{x}) = \mathbf{w}^T \mathbf{x} + b
 $$
