@@ -1,9 +1,66 @@
-### Numpy_nn
+# Numpy_nn - 从数学原理到神经网络实现
 
 ---
 
-This is a neural network implementation with numpy and math. And also it is a record of my learning neural network. With it, I wish I can give some help for someone like me.
+## 项目简介 / Project Introduction
+
+**Numpy_nn** 是一个完全基于 **Numpy** 和 **数学原理** 实现的神经网络库。本项目不仅提供了各种神经网络组件的实现代码，更重要的是包含了详细的学习笔记和数学推导过程，旨在帮助学习者深入理解神经网络背后的数学原理。
 
 ---
 
-这是一个基于Numpy和数学实现的神经网络。也是我学习神经网络的一个笔记。我希望通过它能给像我一样的人带来帮助。
+## 项目特色 / Project Features
+
+- **📚 数学优先**：每个实现都从数学公式推导开始，强调理解而非黑盒使用
+- **🧠 从零构建**：不使用深度学习框架，仅依赖Numpy实现所有组件
+- **📖 学习笔记**：每个模块都配有详细的学习笔记，记录思考过程和关键见解
+- **🔬 模块化设计**：每个神经网络组件都是独立的，便于学习和实验
+- **🎯 循序渐进**：从简单的感知机开始，逐步深入到复杂网络结构
+
+---
+
+## 包含的组件 / Included Components
+
+### 正在构建 / Building
+- **感知机 (Perceptron)**：包含原始感知机和现代可微分版本的实现与数学推导
+- **多层感知机 (MLP)**：全连接神经网络的前向传播与反向传播实现
+- **激活函数**：Sigmoid、Tanh、ReLU等常见激活函数的数学分析与实现
+
+### 计划中 / Planned
+- **残差连接 (Residual Connections)**
+- **卷积神经网络 (CNN)**
+- **循环神经网络 (RNN)**
+- **注意力机制 (Attention Mechanism)**
+
+---
+
+## 如何使用 / How to Use
+
+### 学习模式 / Learning Mode
+1. 阅读对应模块的学习笔记，理解数学原理
+2. 查看实现代码，将数学公式转化为代码
+3. 运行示例，观察实际效果
+4. 尝试修改参数或实现自己的变体
+
+---
+
+## 贡献与反馈 / Contribution & Feedback
+
+欢迎对项目提出建议、报告问题或贡献代码！如果您：
+- 发现了错误或不准确的地方
+- 有改进建议
+- 想要添加新的神经网络组件
+- 希望分享自己的学习笔记
+
+请通过以下方式联系：
+- 提交Issue或Pull Request
+- 或直接联系项目维护者
+
+---
+
+## 许可证 / License
+
+本项目采用 Apache 2.0 许可证 - 详见 [LICENSE](LICENSE) 文件
+
+---
+
+**一起探索神经网络的数学之美！**  
