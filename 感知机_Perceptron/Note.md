@@ -59,7 +59,7 @@ $$
 \frac{\mathrm{d} f(\mathbf{x})}{\mathrm{d} \mathbf{x}} = \frac{\mathrm{d} \text{sign}(g(\mathbf{x}))}{\mathrm{d} g(\mathbf{x})} \times \frac{\mathrm{d} g(\mathbf{x})}{\mathrm{d} \mathbf{x}}
 $$
 
-其中 $\text{sign}(x)$ 的导数如下：
+这是使用 ***“链式法则”*** 的形式展示的，其中 $\text{sign}(x)$ 的导数如下：
 
 $$
 \frac{\mathrm{d} \text{sign}(x)}{\mathrm{d} x} = \begin{cases}
@@ -79,16 +79,16 @@ $$
 
 这将导致在对 $f(\mathbf{x})$ 进行优化时无法获取有效的梯度。
 
-针对这种情况便有了使用 $\tanh(x)$（双曲正切）取代 $\text{sign}(x)$ 作为激活函数的解决方法，它是值域在 $y \in (-1, 1)$ 的函数，其表达式为：
+针对这种情况便有了使用 $\text{sigmoid}(x)$ （s型生长曲线）取代 $\text{sign}(x)$ 作为激活函数的解决方法，它是值域在 $y \in (0, 1)$ 的函数，其表达式为：
 
 $$
-\tanh(x) = \frac{e^{x}-e^{-x}}{e^{x}+e^{-x}}
+\text{sigmoid}(x) = \frac{1}{1 + e^{-x}}
 $$
 
 导数为：
 
 $$
-\frac{\mathrm{d} \tanh(x)}{\mathrm{d} x} = \frac{2}{(e^{x} + e^{-x})^2}
+\frac{\mathrm{d} \text{sigmoid}(x)}{\mathrm{d} x} = \frac{e^{-x}}{(1 + e^{x})^{2}}
 $$
 
 这样子有了可导且非0的激活函数后就可以进行对 $f(\mathbf{x})$ 的优化了
@@ -133,8 +133,10 @@ $$
 
 $$
 g(x) = \mathbf{w}^T \mathbf{x} + b \\
-f(\mathbf{x}) = \tanh(g(\mathbf{x}))
+f(\mathbf{x}) = \text{sigmoid}(g(\mathbf{x}))
 $$
+
+### 损失函数
 
 在机器学习的优化中通常使用“损失函数”来表示模型对实际数据的拟合差距，损失越小意味着拟合效果越好。常见的可以作为损失函数的有“均方误差”和“交叉熵”，前者用于回归模型（实际值），后者用于预测模型（概率）。
 
@@ -169,7 +171,7 @@ $$
 因此二分类的交叉熵损失函数可以写作：
 
 $$
-L = y \log p + (1-y) \log (1-p)
+L = - y \log p + (1-y)\log(1-p)
 $$
 
 由于其中的 $y$ 是真实的样本（one-hot编码样本，即对应的标签的概率为1），但也是一个可变变量，因此，我们对损失函数 $L$ 关于变量 $p$ 的导数需要通过偏微分获得，即：
@@ -178,47 +180,46 @@ $$
 \frac{\partial L}{\partial p_{i,c}} = - \frac{1}{N} \times \frac{y_{i,c}}{p_{i,c}}
 $$
 
-此时我们将面临一个问题：
+对于感知机来说，它只需要输出一个概率就可以得到对立事件的概率，因此我们只需要使它输出一个数即可。同时由于 $f(\mathbf{x}) \in (0,1)$ ，因此可以直接将它的输出视为事件的概率。
+
+### 参数优化
+
+要使得损失值 $L$ 最小，需要调节函数 $f(\mathbf{x})$ 的权重 $\mathbf{w}$ 和 $b$ 。
+
+根据 
 
 $$
-\boxed{\text{概率P该如何获取}}
+f(\mathbf{x}) = \mathbf{w}^T \mathbf{x} + b
 $$
 
-由于 $f(\mathbf{x})$ 的值域是 $f(\mathbf{x}) \in (-1, 1)$ ，不匹配概率的特性，即：
-
-- $p \in [0,1]$
-- $\sum _{i=1} p_{i} = 1$
-
-因此我们常引入 $\text{softmax}(x)$ 将 $f(\mathbf{x})$ 输出的值转换成预测概率。它的数学表达是：
+可知：
 
 $$
-\text{softmax}(x_{i}) = \frac{e^{x_{i}}}{\sum _{j=q} ^{C} e^{x_{j}}}
+\frac{\partial f(\mathbf{x})}{\partial \mathbf{w}} = \mathbf{x} \\
 $$
 
-这个函数有两个实用的性质：
-
-- $\text{softmax}(x) \in (0, 1)$，且总和为1
-- 在定义域内单调递增
-
-首先，第一个性质满足了概率的特征。其次，第二个性质使得它保留了原始输入的相对大小，而不会像二次函数之类的函数把忽略正负值的差异。
-
-因此我们可以通过 $\text{softmax}(x)$ 将 $f(\mathbf{x})$ 的输出和损失值 $L$ 进行关联：
-
 $$
-\frac{\partial L}{\partial f(\mathbf{x})} = \frac{\partial L}{\partial p} \times \frac{\partial p}{\partial f(\mathbf{x})}
+\frac{\partial f(\mathbf{x})}{\partial b} = 1
 $$
 
-其中， $p$ 为：
+因此：
 
 $$
-p = \text{softmax}(f(\mathbf{x}))
+\frac{\partial L}{\partial \mathbf{w}} = \frac{\partial L}{\partial f(\mathbf{x})} \times \frac{\partial f(\mathbf{x})}{\partial \mathbf{w}} = \mathbf{x} \mathbf{(p-y)}
 $$
 
-由于 $\text{softmax}(x)$ 的求导过于复杂，以至于需要较大篇幅来介绍，因此我们跳过这部分，直接记住最终的偏导即可：
-
 $$
-\frac{\partial L}{\partial f(\mathbf{x})} = p - y
+\frac{\partial L}{\partial b} = \frac{\partial L}{\partial f(\mathbf{x})} \times \frac{\partial f(\mathbf{x})}{\partial b} = \mathbf{p} - \mathbf{y}
 $$
 
-此外，有些文章里会提到一种叫做 $\text{sigmoid}(x)$ 的函数。实际上，它和二分类的 $\text{softmax}(x)$ 等价。并且不影响最终的偏导结果。
+所以在参数优化时我们可以按照以下方式进行：
 
+$$
+\mathbf{w}_{n+1} = \mathbf{w}_{n} - \gamma \frac{\partial L}{\partial \mathbf{w}} = \mathbf{w}_{n} - \gamma \mathbf{x} (\mathbf{p} - \mathbf{y})
+$$
+
+$$
+b_{n+1} = b_{n} - \gamma \frac{\partial L}{\partial b} = b_{n} - \gamma (\mathbf{p} - \mathbf{y})
+$$
+
+至此感知机的基本原理和优化方式到此介绍，详细的实现过程可以参考  `main.py` 代码。
