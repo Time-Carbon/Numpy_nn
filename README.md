@@ -20,8 +20,10 @@
 
 ## 包含的组件 / Included Components
 
-### 正在构建 / Building
+### 构建完成
 - **感知机 (Perceptron)**：包含原始感知机和现代可微分版本的实现与数学推导
+
+### 正在构建 / Building
 - **多层感知机 (MLP)**：全连接神经网络的前向传播与反向传播实现
 - **激活函数**：Sigmoid、Tanh、ReLU等常见激活函数的数学分析与实现
 
