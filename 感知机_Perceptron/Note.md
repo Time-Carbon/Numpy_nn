@@ -88,7 +88,7 @@ $$
 导数为：
 
 $$
-\frac{\mathrm{d} \text{sigmoid}(x)}{\mathrm{d} x} = \frac{e^{-x}}{(1 + e^{x})^{2}}
+\frac{\mathrm{d} \text{sigmoid}(x)}{\mathrm{d} x} = \text{sigmoid}(x)(1-\text{sigmoid}(x)) = \frac{e^{-x}}{(1 + e^{x})^{2}}
 $$
 
 这样子有了可导且非0的激活函数后就可以进行对 $f(\mathbf{x})$ 的优化了
@@ -177,10 +177,20 @@ $$
 由于其中的 $y$ 是真实的样本（one-hot编码样本，即对应的标签的概率为1），但也是一个可变变量，因此，我们对损失函数 $L$ 关于变量 $p$ 的导数需要通过偏微分获得，即：
 
 $$
-\frac{\partial L}{\partial p_{i,c}} = - \frac{1}{N} \times \frac{y_{i,c}}{p_{i,c}}
+\frac{\partial L}{\partial p} = - \frac{y}{p} + \frac{1-y}{1-p}
 $$
 
-对于感知机来说，它只需要输出一个概率就可以得到对立事件的概率，因此我们只需要使它输出一个数即可。同时由于 $f(\mathbf{x}) \in (0,1)$ ，因此可以直接将它的输出视为事件的概率。
+由于感知机的输出是 $f(\mathbf{x}) \in (0,1)$ 因此可以将其视为概率 $p$ 来进行使用。
+
+所以
+
+$$
+\begin{align*}
+  \frac{\partial L}{\partial g(\mathbf{x})} &= \frac{\partial L}{\partial f(\mathbf{x})} \times \frac{\partial f(\mathbf{x})}{\partial g(\mathbf{x})} \\
+  &= (- \frac{y}{p} + \frac{1-y}{1-p}) \times p(1-p) \\
+  &= p-y
+\end{align*}
+$$
 
 ### 参数优化
 
@@ -189,27 +199,27 @@ $$
 根据 
 
 $$
-f(\mathbf{x}) = \mathbf{w}^T \mathbf{x} + b
+g(\mathbf{x}) = \mathbf{w}^T \mathbf{x} + b
 $$
 
 可知：
 
 $$
-\frac{\partial f(\mathbf{x})}{\partial \mathbf{w}} = \mathbf{x} \\
+\frac{\partial g(\mathbf{x})}{\partial \mathbf{w}} = \mathbf{x} \\
 $$
 
 $$
-\frac{\partial f(\mathbf{x})}{\partial b} = 1
+\frac{\partial g(\mathbf{x})}{\partial b} = 1
 $$
 
 因此：
 
 $$
-\frac{\partial L}{\partial \mathbf{w}} = \frac{\partial L}{\partial f(\mathbf{x})} \times \frac{\partial f(\mathbf{x})}{\partial \mathbf{w}} = \mathbf{x} \mathbf{(p-y)}
+\frac{\partial L}{\partial \mathbf{w}} = \frac{\partial L}{\partial g(\mathbf{x})} \times \frac{\partial g(\mathbf{x})}{\partial \mathbf{w}} = \mathbf{x} \mathbf{(p-y)}
 $$
 
 $$
-\frac{\partial L}{\partial b} = \frac{\partial L}{\partial f(\mathbf{x})} \times \frac{\partial f(\mathbf{x})}{\partial b} = \mathbf{p} - \mathbf{y}
+\frac{\partial L}{\partial b} = \frac{\partial L}{\partial g(\mathbf{x})} \times \frac{\partial g(\mathbf{x})}{\partial b} = \mathbf{p} - \mathbf{y}
 $$
 
 所以在参数优化时我们可以按照以下方式进行：
