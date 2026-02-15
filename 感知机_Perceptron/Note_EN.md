@@ -1,18 +1,18 @@
-## 一、感知机的基本知识
+## The basical knowledge of perceptron
 
-**感知机是由弗兰克·罗森布拉特（Frank Rosenblatt）提出的一种线性分类器**
-  - 线性分类器还包括以下类别
-    - 逻辑回归
-    - 支持向量机
-    - Fisher线性判别
+**Perceptron is a linear classifier created by Frank Rosenblatt**
+  - Linear classifiers also include the following:
+    - Logistic Regression
+    - Support vector machine
+    - Fisher's Linear Discriminant
 
-**感知机的数学表达**：
+**The mathematical definition of perceptron**:
 
 $$
 f(\mathbf{x}) = \text{sign}(\mathbf{w}^T \mathbf{x} + b)
 $$
 
-其中 $T$ 代表是权重向量的转置， $\text{sign}(\mathbf{x})$ 是阶越函数，它的表达式是：
+$T$ is the transpose for weight vector， $\text{sign}(\mathbf{x})$ is the signum function, the definition is:
 
 $$
 \text{sign}(x) = \begin{cases}
@@ -22,23 +22,23 @@ $$
 \end{cases}
 $$
 
-### 感知机的数学推导
+### The derivation of perceptron
 
-设
+Now, we define a function:
 
 $$
 g(\mathbf{x}) = \mathbf{w}^T \mathbf{x} + b
 $$
 
-则
+So, we can get this:
 
 $$
 f(\mathbf{x}) = \text{sign}(g(\mathbf{x}))
 $$
 
-从 $g(\mathbf{x})$ 来看，是一个将输入进行加权求和后，再由偏置$b$进行平移后得到输出。
+From $g(\mathbf{x})$ , we can see the output of it is processed with weighted summation and translated with bias $b$ .
 
-而从 $\text{sign}(\mathbf{x})$ 来看，则可以视为：
+From $\text{sign}(\mathbf{x})$ , it acts as：
 
 $$
 \text{sign}(x) = \begin{cases}
@@ -47,11 +47,11 @@ $$
 \end{cases}
 $$
 
-因此 $f(\mathbf{x})$ 可以看作是只取得 $g(\mathbf{x})$ 的符号位。
+So, the function $f(\mathbf{x})$ is getting symbol of $g(\mathbf{x})$ .
 
-### 感知机的可微分性
+### The differentiability of percptron
 
-可微分是现代感知机和神经网络的一个重要特征，这意味着它可以使用类似于梯度下降之类的方式优化。（后面会详细介绍）
+The differentiability is the key feature for modern percptron and neural network, it means them can be optimized with gradient descent, which will be described particularly.
 
 在我们的原始感知机的例子中 $f(\mathbf{x})$ 是一个复合函数，它的微分情况可以如下表示：
 
