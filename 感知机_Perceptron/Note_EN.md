@@ -53,22 +53,22 @@ So, the function $f(\mathbf{x})$ is getting symbol of $g(\mathbf{x})$ .
 
 The differentiability is the key feature for modern percptron and neural network, it means them can be optimized with gradient descent, which will be described particularly.
 
-在我们的原始感知机的例子中 $f(\mathbf{x})$ 是一个复合函数，它的微分情况可以如下表示：
+In our example, $f(\mathbf{x})$ is a composite function, its differential is following：
 
 $$
 \frac{\mathrm{d} f(\mathbf{x})}{\mathrm{d} \mathbf{x}} = \frac{\mathrm{d} \text{sign}(g(\mathbf{x}))}{\mathrm{d} g(\mathbf{x})} \times \frac{\mathrm{d} g(\mathbf{x})}{\mathrm{d} \mathbf{x}}
 $$
 
-这是使用 ***“链式法则”*** 的形式展示的，其中 $\text{sign}(x)$ 的导数如下：
+There is showed with ***Chain rules***. The differential of $\text{sign}(x)$ is following：
 
 $$
 \frac{\mathrm{d} \text{sign}(x)}{\mathrm{d} x} = \begin{cases}
   0, & x \not ={0} \\
-  不可求导, x = 0
+  Can't be differentiated, x = 0
 \end{cases}
 $$
 
-因此 $f(\mathbf{x})$ 的导数为：
+So, the $f(\mathbf{x})$ 的导数为：
 
 $$
 \frac{\mathrm{d} f(\mathbf{x})}{\mathrm{d} \mathbf{x}} = \begin{cases}
