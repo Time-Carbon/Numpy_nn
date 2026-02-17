@@ -6,13 +6,13 @@
     - 支持向量机
     - Fisher线性判别
 
-**感知机的数学表达**：
+**初代感知机的数学定义**：
 
 $$
 f(\mathbf{x}) = \text{sign}(\mathbf{w}^T \mathbf{x} + b)
 $$
 
-其中 $T$ 代表是权重向量的转置， $\text{sign}(\mathbf{x})$ 是阶越函数，它的表达式是：
+其中 $T$ 代表是权重向量的转置， $\text{sign}(x)$ 是阶越函数，它的表达式是：
 
 $$
 \text{sign}(x) = \begin{cases}
@@ -22,7 +22,7 @@ $$
 \end{cases}
 $$
 
-### 感知机的数学推导
+### 初代感知机的数学推导
 
 设
 
@@ -47,7 +47,7 @@ $$
 \end{cases}
 $$
 
-因此 $f(\mathbf{x})$ 可以看作是只取得 $g(\mathbf{x})$ 的符号位。
+因此 $f(\mathbf{x})$ 可以看作是只取得 $g(\mathbf{x})$ 的符号。
 
 ### 感知机的可微分性
 
@@ -77,7 +77,7 @@ $$
 \end{cases}
 $$
 
-这将导致在对 $f(\mathbf{x})$ 进行优化时无法获取有效的梯度。
+这将导致在对 $f(\mathbf{x})$ 进行优化时无法获取有效的导数（也就是“梯度下降”中的“梯度”）。
 
 针对这种情况便有了使用 $\text{sigmoid}(x)$ （s型生长曲线）取代 $\text{sign}(x)$ 作为激活函数的解决方法，它是值域在 $y \in (0, 1)$ 的函数，其表达式为：
 
@@ -88,7 +88,7 @@ $$
 导数为：
 
 $$
-\frac{\mathrm{d} \text{sigmoid}(x)}{\mathrm{d} x} = \text{sigmoid}(x)(1-\text{sigmoid}(x)) = \frac{e^{-x}}{(1 + e^{x})^{2}}
+\frac{\mathrm{d} \text{sigmoid}(x)}{\mathrm{d} x} = \text{sigmoid}(x)[1-\text{sigmoid}(x)] = \frac{e^{-x}}{(1 + e^{x})^{2}}
 $$
 
 这样子有了可导且非0的激活函数后就可以进行对 $f(\mathbf{x})$ 的优化了
@@ -121,7 +121,7 @@ x_{n+1} - x_{n} = - \gamma f'(x_{n}) \\
 x_{n+1} = x_{n} - \gamma f'(x_{n})
 $$
 
-综上，我们需要找到 $x$ 使得 $f(x)$ 最小就需要知道当前的 $x$ 和对应的 $f'(x)$ 
+综上，我们需要找到下一步的 $x_{n+1}$ 使得 $f(x_{n+1})$ 最小就需要知道当前的 $x_{n}$ 和对应的 $f'(x_{n})$ 
 
 ---
 

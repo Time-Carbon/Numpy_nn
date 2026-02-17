@@ -4,10 +4,11 @@ import numpy as np
 # 假设有一个这样的场景，我们在测量水温，当它达到一个阈值时，这个装置就会报警。
 
 # 构建训练数据和标签
-x = np.random.uniform(0, 100, size=(500,1)) 
+np.random.seed(1024) # 控制随机数，方便复现
+x = np.random.uniform(0, 100, size=(500,1)) # 生成500个训练样本
 y = np.where(x >= 60, 1, 0) # 温度≥60报警
 
-# 特征归一化，防止梯度爆炸
+# 特征归一化，防止梯度爆炸，即 x/max(x)
 x_normalized = x / 100.0  # 归一化到[0,1]
 
 # 初始化权重和偏置
@@ -15,7 +16,7 @@ w = np.array([[0.01]])  # 小的正权重
 b = np.array([0.0])
 
 # 训练参数
-batch = 20
+batch = 20 # 单次训练使用的样本量
 lr = 1e-2  # 学习率
 epochs = 20  # 训练轮次
 
@@ -47,7 +48,7 @@ for epoch in range(epochs):
         loss = np.mean(cross_entropy(p, y_shuffled[i:i+batch]))
         epoch_losses.append(loss)
         
-        # 反向传播
+        # 反向传播梯度
         dz = p - y_shuffled[i:i+batch]
         dw = np.dot(x_shuffled[i:i+batch].T, dz) / batch
         db = np.sum(dz) / batch
@@ -59,7 +60,7 @@ for epoch in range(epochs):
     avg_loss = np.mean(epoch_losses)
     losses.append(avg_loss)
     
-    # 每10个epoch打印一次
+    # 每2个epoch打印一次
     if epoch % 2 == 0:
         print(f"Epoch {epoch}, 平均损失：{avg_loss:.6f}")
 
