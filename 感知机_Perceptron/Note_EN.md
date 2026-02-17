@@ -38,7 +38,7 @@ $$
 
 From $g(\mathbf{x})$ , we can see the output of it is processed with weighted summation and translated with bias $b$ .
 
-From $\text{sign}(\mathbf{x})$ , it acts as：
+From $\text{sign}(x)$ , it acts as：
 
 $$
 \text{sign}(x) = \begin{cases}
@@ -49,9 +49,9 @@ $$
 
 So, the function $f(\mathbf{x})$ is getting symbol of $g(\mathbf{x})$ .
 
-### The differentiability of percptron
+### The differentiability of perceptron
 
-The differentiability is the key feature for modern percptron and neural network, it means them can be optimized with gradient descent, which will be described particularly.
+The differentiability is the key feature for modern perceptron and neural network, it means them can be optimized with gradient descent, which will be described particularly.
 
 In our example, $f(\mathbf{x})$ is a composite function, its differential is following：
 
@@ -59,7 +59,7 @@ $$
 \frac{\mathrm{d} f(\mathbf{x})}{\mathrm{d} \mathbf{x}} = \frac{\mathrm{d} \text{sign}(g(\mathbf{x}))}{\mathrm{d} g(\mathbf{x})} \times \frac{\mathrm{d} g(\mathbf{x})}{\mathrm{d} \mathbf{x}}
 $$
 
-There is showed with ***Chain rules***. The differential of $\text{sign}(x)$ is following：
+There is shown with ***Chain rules***. The differential of $\text{sign}(x)$ is following：
 
 $$
 \frac{\mathrm{d} \text{sign}(x)}{\mathrm{d} x} = \begin{cases}
@@ -68,40 +68,40 @@ $$
 \end{cases}
 $$
 
-So, the $f(\mathbf{x})$ 的导数为：
+So, the differential of $f(\mathbf{x})$ is following：
 
 $$
 \frac{\mathrm{d} f(\mathbf{x})}{\mathrm{d} \mathbf{x}} = \begin{cases}
   0, & x \not ={0} \\
-  不可求导, x = 0
+  Can't be differentiated, x = 0
 \end{cases}
 $$
 
-这将导致在对 $f(\mathbf{x})$ 进行优化时无法获取有效的梯度。
+This case will lead to $f(\mathbf{x})$ can't be optimized effectively.
 
-针对这种情况便有了使用 $\text{sigmoid}(x)$ （s型生长曲线）取代 $\text{sign}(x)$ 作为激活函数的解决方法，它是值域在 $y \in (0, 1)$ 的函数，其表达式为：
+So, we usually use $\text{sigmoid}(x)$ as activation function, rather than $\text{sign}(x)$, the output of it is $y \in (0, 1)$, here is definition:
 
 $$
 \text{sigmoid}(x) = \frac{1}{1 + e^{-x}}
 $$
 
-导数为：
+The differential is:
 
 $$
 \frac{\mathrm{d} \text{sigmoid}(x)}{\mathrm{d} x} = \text{sigmoid}(x)(1-\text{sigmoid}(x)) = \frac{e^{-x}}{(1 + e^{x})^{2}}
 $$
 
-这样子有了可导且非0的激活函数后就可以进行对 $f(\mathbf{x})$ 的优化了
+With the change, the $f(\mathbf{x})$ is differentiable. Furtherly, the function can be optimized.
 
 ---
 
-## 二、梯度下降优化
+## Gradient descent
 
-**梯度下降是由奥古斯丁-路易·柯西‌（Augustin-Louis Cauchy）提出的一种函数最小化优化算法**
+**Gradient descent is a method of functional minimization proposed by Augustin-Louis Cauchy.**
 
-### 梯度下降的数学推导
+### The derivation of gradient desceng.
 
-设可微分的未知函数 $f(x)$ ， $n$ 为优化次数：
+We define a function $f(\mathbf{x}$, which is differentiable, but unknown. And the $n$ is times of optimizaatio:
 
 $$
 f(x_{n+1}) = f(x_{n}) + (x_{n+1} - x_{n}) \frac{f(x_{n+1}) - f(x_{n})}{x_{n+1} - x_{n}}
