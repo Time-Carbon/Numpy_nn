@@ -59,7 +59,7 @@ $$
 \frac{\mathrm{d} f(\mathbf{x})}{\mathrm{d} \mathbf{x}} = \frac{\mathrm{d} \text{sign}(g(\mathbf{x}))}{\mathrm{d} g(\mathbf{x})} \times \frac{\mathrm{d} g(\mathbf{x})}{\mathrm{d} \mathbf{x}}
 $$
 
-这是使用 ***“链式法则”*** 的形式展示的，其中 $\text{sign}(x)$ 的导数如下：
+这里使用 ***“链式法则”*** 的形式展示的，其中 $\text{sign}(x)$ 的导数如下：
 
 $$
 \frac{\mathrm{d} \text{sign}(x)}{\mathrm{d} x} = \begin{cases}
@@ -107,7 +107,7 @@ $$
 f(x_{n+1}) = f(x_{n}) + (x_{n+1} - x_{n}) \frac{f(x_{n+1}) - f(x_{n})}{x_{n+1} - x_{n}}
 $$
 
-要使得 $f(x)$ 最小化，我们就需要寻找到能使得函数最小的 $x$ ,观察上式可知，我们需要后面的
+要使得 $f(x)$ 最小化，我们就需要寻找到能使得函数最小的 $x$ ,观察上式可知，我们需要使得下面的式子为负：
 
 $$
 (x_{n+1} - x_{n}) \frac{f(x_{n+1}) - f(x_{n})}{x_{n+1} - x_{n}} < 0
