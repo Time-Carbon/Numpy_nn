@@ -32,7 +32,9 @@ $$
 y = 2x + 0
 $$
 
-![感知机1个权重](https://foruda.gitee.com/images/1771415736186378853/cd1c4f40_16636277.png "屏幕截图")
+<div align="center">
+<img src="https://foruda.gitee.com/images/1771415736186378853/cd1c4f40_16636277.png" width="50%"/>
+</div>
 
 数量增至2时，则是在三维空间的一个平面：
 
@@ -40,7 +42,9 @@ $$
 z = 2x + 2y + 0
 $$
 
-![感知机2个权重](https://foruda.gitee.com/images/1771415324221343379/716d91d3_16636277.png "下载.png")
+<div align="center">
+<img src="https://foruda.gitee.com/images/1771415324221343379/716d91d3_16636277.png" width="50%"/>
+</div>
 
 由此我们可以发现，无论函数 $g(\mathbf{x})$ 的维度提升至多少维度，它都是将一个空间平直地划分为两个空间，不会出现弯曲。
 
@@ -67,7 +71,9 @@ $$
 
 在三维空间中，这些点所构成的物体是一个三角锥：
 
-![异或三维图](https://foruda.gitee.com/images/1771418639948125536/7085e97b_16636277.png "屏幕截图")
+<div align="center">
+<img src="https://foruda.gitee.com/images/1771418639948125536/7085e97b_16636277.png" width="50%"/>
+</div>
 
 这意味着平面已经没法正确拟合这些点了，
 
