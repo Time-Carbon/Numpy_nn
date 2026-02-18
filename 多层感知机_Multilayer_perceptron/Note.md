@@ -1,3 +1,8 @@
+## 一、多层感知机的由来
+
+
+
+## 多层感知机的优化
 此时我们将面临一个问题：
 
 $$
@@ -40,4 +45,4 @@ $$
 \frac{\partial L}{\partial f(\mathbf{x})} = \mathbf{p} - \mathbf{y}
 $$
 
-此外， $\text{sigmoid}(x)$ 函数，它和二分类的 $\text{softmax}(x)$ 等价。并且不影响最终的偏导结果。
+此外， $\text{sigmoid}(x)$ 函数和二分类的 $\text{softmax}(x)$ 等价。并且不影响最终的偏导结果。
