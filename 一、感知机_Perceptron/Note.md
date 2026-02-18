@@ -132,8 +132,10 @@ $$
 现代感知机：
 
 $$
-g(x) = \mathbf{w}^T \mathbf{x} + b \\
-f(\mathbf{x}) = \text{sigmoid}(g(\mathbf{x}))
+\begin{align*}
+  & g(x) = \mathbf{w}^T \mathbf{x} + b \\
+  & f(\mathbf{x}) = \text{sigmoid}(g(\mathbf{x}))
+\end{align*}
 $$
 
 ### 损失函数
