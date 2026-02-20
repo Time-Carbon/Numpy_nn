@@ -64,7 +64,14 @@ class MLP:
                 d_err = np.dot(d_err, self.weight[i].T)
 
     def train(self, x, y, step, note_step = 1, lr = 0.01, alpha = 0.01):
+        x_input = x # 存储原始输入，后续将其打乱
+        y_input = y
+
         for i in range(step):
+            index = np.random.permutation(x.shape[0])
+            x_input = x_input[index]
+            y_input = y_input[index]
+
             self.forward(x, alpha)
             loss = self.cross_entropy(y, self.z_cache[-1])
             if i % note_step == 0:
@@ -74,39 +81,57 @@ class MLP:
             self.d_Lrelu_cache.clear()
 
 if __name__ == "__main__":
-    dtype = np.float16
-    x = np.array([[0,0],
-                  [1,0],
-                  [0,1],
-                  [1,1]]).astype(dtype)
-    y_label = np.array([1, 0, 0, 1])
-    y = np.eye(2)[y_label].astype(dtype)
+    dtype = np.float32
 
-    batch = x.shape[0]
-    input_dim = x.shape[1]
-    hide_dim = 16
-    type_num = y.shape[1]
-    layer_num = 18
+    x_0 = np.arange(0,10).astype(dtype).reshape(-1,1) # 构建异或为0的数据
+    x_0 = x_0 + np.zeros((x_0.shape[0],2),dtype=dtype)
+    x_0 = x_0 / np.max(x_0) # 输入数据归一化
+    y_0 = np.zeros((x_0.shape[0]),dtype=np.int8) # 对应数量的标签
+    y_0 = np.eye(2)[y_0].astype(dtype)
+    # 转换为one-hot标签，即有两种不同的标签[输出为0，输出为1]，被选中的标签对应的值为1
+    # 比如one-hot标签为[1,0]，则表示选中的标签是第一个标签，即“输出为0”
+    
+    x_1 = np.random.randint(0,10,size=(11,2)) # 构建异或为1的数据(由于有去重和筛选环节，因此需要留出多余的数来确保经过这些操作后数据能到达10)
+    mask = x_1[:,0] != x_1[:,1]
+    x_1 = x_1[mask] # 取两个数不同的数组
+    x_1 = np.unique(x_1, axis=0)
+    x_1 = x_1 / np.max(x_1)
+    y_1 = 1 + np.zeros((x_1.shape[0]), dtype=np.int8)
+    y_1 = np.eye(2)[y_1].astype(dtype)
 
-    layer_shape = []
-    for i in range(layer_num):
-        if i == 0:
-            layer_shape.append(input_dim)
-        elif i == layer_num - 1:
-            layer_shape.append(type_num)
-        else:
-            layer_shape.append(hide_dim)
+    x = np.concatenate((x_1,x_0), axis=0) # 沿着行的方向合并数据
+    y = np.concatenate((y_1,y_0), axis=0)
 
-    mlp = MLP(layer_shape, dtype = dtype)
+    input_dim = x.shape[1] # 输入层维度，即输入数据有多少个
+    hide_dim = 4 * input_dim # 隐藏层维度，需要扩大维度，用于抵消激活函数导致的信息损失，详见Note.md
+    output_dim = y.shape[1] # 输出层维度，即输出时有多少个类别
 
-    mlp.train(x, y, 100, 10, 1e-2)
+    mlp = MLP([input_dim,hide_dim,hide_dim,output_dim], dtype = dtype)
 
-    print(y)
+    mlp.train(x, y, 2000, 200, 1e-2)
+
+    x_test = np.array([
+        [2,3],
+        [2,2],
+        [4,5],
+        [5,5]
+    ]).astype(dtype)
+    x_test = x_test / np.max(x_test)
+
+    y_test = np.array([
+        [0,1],
+        [1,0],
+        [0,1],
+        [1,0]
+    ]).astype(dtype)
+
+    print(y_test) # 输出真实标签，方便我们后续对比
     print()
 
-    pred_p = mlp.forward(x)
+    pred_p = mlp.forward(x_test) # 获取训练好的多层感知机的输出
     pred_label = np.argmax(pred_p, axis = 1)
-    pred_label = np.eye(2)[pred_label]
+    pred_label = np.eye(2)[pred_label] # 转换为one-hot标签
+
     print(pred_label)
     print()
     print(pred_p)
