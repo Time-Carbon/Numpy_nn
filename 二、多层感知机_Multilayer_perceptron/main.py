@@ -13,7 +13,7 @@ class MLP:
         self.d_Lrelu_cache = []
 
         for i in range(self.layers_num - 1):
-            w = np.random.randn(self.layers_shape[i], self.layers_shape[i + 1]).astype(self.dtype) * np.sqrt(2 / self.layers_shape[i]) # He 初始化方法
+            w = (np.random.randn(self.layers_shape[i], self.layers_shape[i + 1]) * np.sqrt(2 / self.layers_shape[i])).astype(self.dtype) # He 初始化方法
             b = np.zeros(self.layers_shape[i + 1]).astype(self.dtype)
             self.weight.append(w)
             self.biase.append(b)
@@ -25,7 +25,7 @@ class MLP:
         return z_exp / z_sum
 
     def leaky_relu(self, z, alpha = 0.01):
-        self.d_Lrelu_cache.append(np.where(z > 0, 1, alpha))
+        self.d_Lrelu_cache.append(np.where(z > 0, 1, alpha).astype(self.dtype))
         z = np.maximum(alpha * z, z)
         return z
 
@@ -83,7 +83,7 @@ class MLP:
 
 
 if __name__ == "__main__":
-    dataType = np.float16
+    dataType = np.float16 # 设置存储和计算时使用的数据类型，可以节约内存，并提高计算速度
 
     x_0 = np.arange(0,10).astype(dataType).reshape(-1,1) # 构建异或为0的数据
     x_0 = x_0 + np.zeros((x_0.shape[0],2),dtype=dataType)
@@ -93,13 +93,13 @@ if __name__ == "__main__":
     # 转换为one-hot标签，即有两种不同的标签[输出为0，输出为1]，被选中的标签对应的值为1
     # 比如one-hot标签为[1,0]，则表示选中的标签是第一个标签，即“输出为0”
     
-    x_1 = np.random.randint(0,10,size=(11,2)) # 构建异或为1的数据(由于有去重和筛选环节，因此需要留出多余的数来确保经过这些操作后数据能到达10)
+    x_1 = np.random.randint(0,10,size=(11,2)).astype(dataType) # 构建异或为1的数据(由于有去重和筛选环节，因此需要留出多余的数来确保经过这些操作后数据能到达10)
     mask = x_1[:,0] != x_1[:,1]
     x_1 = x_1[mask] # 取两个数不同的数组
     x_1 = np.unique(x_1, axis=0)
     x_1 = x_1 / np.max(x_1)
     y_1 = 1 + np.zeros((x_1.shape[0]), dtype=np.int8)
-    y_1 = np.eye(2)[y_1].astype(dataType, copy=False)
+    y_1 = np.eye(2)[y_1].astype(dataType)
 
     x = np.concatenate((x_1, x_0), axis=0)  # 沿着行的方向合并数据
     y = np.concatenate((y_1, y_0), axis=0)
