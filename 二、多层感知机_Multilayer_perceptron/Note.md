@@ -1,5 +1,7 @@
 ## 一、多层感知机的由来
 
+**感知机的局限性**
+
 想要了解为什么会有多层感知机，我们需要知道单个感知机有哪些劣势。
 
 首先，我们观察一下感知机的数学定义：
@@ -77,8 +79,45 @@ $$
 
 此时，由于单个感知机只能拟合一个平面，这意味着它在拟合这个“三角锥”时，至少有一个点是在平面之外的，这个点却不是现实中的噪声，而是数学中确定的一个点。
 
+**那么应该怎么解决呢？**
 
-## 多层感知机的优化
+首先，我们需要让一个平面变成至少两个。因此，我们需要引入一种函数来实现，这种函数被称为“激活函数”。以目前常见的*Leaky ReLU（泄露型线性整流单元）*为例，它的定义如下：
+
+$$
+\text{ReLU}(x) = \begin{cases}
+    x, & x > 0 \\
+    \alpha x, & x \leq 0
+\end{cases}
+$$
+
+$$\text{Leaky ReLU演示}$$
+
+<div align="center">
+<img src="https://foruda.gitee.com/images/1771953348692462912/bc984ff5_16636277.png" width="50%"/>
+</div>
+
+
+
+
+$$\text{MLP 2层}$$
+
+<div align="center">
+<img src="https://foruda.gitee.com/images/1771950535854297167/5b8a561d_16636277.png" width="50%"/>
+</div>
+
+$$\text{MLP3层}$$
+
+<div align="center">
+<img src="https://foruda.gitee.com/images/1771950565856382664/5a5f2714_16636277.png" width="50%"/>
+</div>
+
+MLP异或拟合
+
+<div align="center">
+<img src="https://foruda.gitee.com/images/1771952087475393345/4d820200_16636277.png" width="50%"/>
+</div>
+
+## 二、多层感知机的优化方法
 此时我们将面临一个问题：
 
 $$
