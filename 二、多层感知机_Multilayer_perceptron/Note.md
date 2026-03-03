@@ -81,10 +81,10 @@ $$
 
 **那么应该怎么解决呢？**
 
-首先，我们需要让一个平面变成至少两个。因此，我们需要引入一种函数来实现，这种函数被称为“激活函数”。以目前常见的*Leaky ReLU（泄露型线性整流单元）*为例，它的定义如下：
+首先，我们需要让一个平面变成至少两个。因此，我们需要引入一种函数来实现，这种函数被称为“激活函数”。以目前常见的 *Leaky ReLU（泄露型线性整流单元）* 为例，它的定义如下：
 
 $$
-\text{ReLU}(x) = \begin{cases}
+\text{Leaky ReLU}(x) = \begin{cases}
     x, & x > 0 \\
     \alpha x, & x \leq 0
 \end{cases}
@@ -96,14 +96,33 @@ $$\text{Leaky ReLU演示}$$
 <img src="https://foruda.gitee.com/images/1771953348692462912/bc984ff5_16636277.png" width="50%"/>
 </div>
 
+此时，我们可以定义一种函数 $f_{neuron}(\mathbf{x})$ ,也就是我们“神经网络”中的“神经元”：
 
+$$
+f_{neuron} = \text{Leaky ReLU}(g(\mathbf{x}))
+$$
 
+当我们仅有一个“神经元”时，无论我们如何调整参数，我们都只能对这两个平面进行平移和缩放，依旧无法拟合非线性函数。
+
+因此，我们需要想办法增加平面，并加以控制。
+
+当我们将神经元进行嵌套时，我们就会发现它的可以被控制的面变多了。就像下面的示意图那样：
+
+$$\text{神经元嵌套为神经网络}$$
+
+<div align="center">
+<img src="https://foruda.gitee.com/images/1772264038270867246/fb4c4f8d_16636277.png" width="50%"/>
+</div>
+
+此时我们观察这个结构所产生的图像：
 
 $$\text{MLP 2层}$$
 
 <div align="center">
 <img src="https://foruda.gitee.com/images/1771950535854297167/5b8a561d_16636277.png" width="50%"/>
 </div>
+
+我们会发现相比于单个神经元，两层嵌套后的神经元网络具备更多的可控制的区域。
 
 $$\text{MLP3层}$$
 
