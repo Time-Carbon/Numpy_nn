@@ -43,6 +43,17 @@
 3. 运行示例，观察实际效果
 4. 尝试修改参数或实现自己的变体
 
+### 环境搭建 / Environment Sync
+1. 确保安装 `uv` 工具，若未安装可以运行以下命令安装：
+```bash
+pip install uv
+```
+2. 安装 `uv` 工具后，运行以下命令同步运行环境
+```bash
+uv sync
+```
+3. 完成环境同步后即可运行代码
+
 ---
 
 ## 贡献与反馈 / Contribution & Feedback
