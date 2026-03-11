@@ -1,6 +1,7 @@
 import numpy as np
 import sys
 
+
 class MLP:
     def __init__(self, layers_shape, dtype):
         self.layers_shape = layers_shape
@@ -25,9 +26,10 @@ class MLP:
         z_sum = np.sum(z_exp, axis=1, keepdims=True)
         return z_exp / z_sum
 
-    def leaky_relu(self, z, alpha=0.01):
+    def leaky_relu(self, z, alpha=0.01, train_status=False):
         d_z = np.where(z > 0, 1, alpha).astype(self.dtype)
-        self.d_Lrelu_cache.append(d_z)
+        if train_status == True:
+            self.d_Lrelu_cache.append(d_z)
         z = z * d_z
         return z
 
@@ -38,7 +40,7 @@ class MLP:
         loss = np.mean(-ce_sum)
         return loss
 
-    def forward(self, x, alpha=0.01):
+    def forward(self, x, alpha=0.01, train_status=False):
         z = x
         for i in range(self.layers_num - 1):
             z = np.dot(z, self.weight[i]) + self.biase[i]
@@ -46,10 +48,11 @@ class MLP:
             if i == self.layers_num - 2:
                 z = self.softmax(z)
             else:
-                z = self.leaky_relu(z, alpha)
+                z = self.leaky_relu(z, alpha, train_status)
 
-            self.z_cache.append(z)
-        return self.z_cache[-1]
+            if train_status == True:
+                self.z_cache.append(z)
+        return z
 
     def backward(self, x, y, lr):
         d_err = (self.z_cache[-1] - y)  # 经过交叉熵和softmax求导后的偏导
@@ -78,18 +81,18 @@ class MLP:
 
             return 0
 
-    def train(self, x, y, step=sys.maxsize, note_step=1, lr=0.01, alpha=0.01, epoche=1, batch=4):
+    def train(self, x, y, step=sys.maxsize, note_step=1, lr=0.01, alpha=0.01, epoch=1, batch=sys.maxsize):
         x_input = x  # 存储原始输入，后续将其打乱
         y_input = y
         step_count = 0
 
-        for i_e in range(epoche):
+        for i_e in range(epoch):
             index = np.random.permutation(x.shape[0])  # 生成随机的不重复的序列
             x_input = x_input[index]
             y_input = y_input[index]
 
             for i in range(0, np.minimum(x_input.shape[0], step), np.minimum(x_input.shape[0], batch)):
-                self.forward(x_input[i:i+batch-1], alpha)
+                self.forward(x_input[i:i+batch-1], alpha, True)
                 loss = self.cross_entropy(
                     y_input[i:i+batch-1], self.z_cache[-1])
                 if step_count % note_step == 0:

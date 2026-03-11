@@ -1,7 +1,13 @@
 import numpy as np
 from mlp import MLP
 
+dataType = np.float16  # 设置存储和计算时使用的数据类型，可以节约内存，并提高计算速度
+
+
 def build_data(dataType, min, max):
+    '''
+    生成未标注的数据
+    '''
     x_0 = np.random.uniform(min, max, size=(
         100, 1)).astype(dataType)  # 构建异或为0的数据
     x_0 = x_0 + np.zeros((x_0.shape[0], 2), dtype=dataType)
@@ -24,26 +30,48 @@ def build_data(dataType, min, max):
 
 
 def p_to_l(label_p: np.ndarray, top_k: int, min_p: float, max_p: float):
-    label: np.ndarray
-    index: np.ndarray
+    '''
+    将预测概率转换为伪标签
+    '''
+    label = []
+    index = []
 
-    sample_size = np.max(1, top_k // label_p.shape[1])  # 每个类别至少一个
+    sample_size = top_k // label_p.shape[1]
+    sample_size = np.maximum(1, sample_size)  # 每个类别至少一个
+    cls_index = np.arange(label_p.shape[1])
 
-    return label, index[:top_k]
+    for cls in cls_index:
+        cls_eye = np.zeros(label_p.shape[0], dtype=np.int64) + cls
+        cls_eye = np.eye(label_p.shape[1])[cls_eye]
+        cls_mask = np.where((cls_eye == 1), True, False)
+
+        cls_p = label_p[cls_mask]
+        sorted_cls_p_index = np.argsort(cls_p)[::-1]  # 由大到小排序
+
+        sorted_label_p = label_p[sorted_cls_p_index]
+        min_p_mask = np.where(cls_p > min_p, True, False)
+        max_p_mask = np.where(cls_p < max_p, True, False)
+        keep_mask = np.where(max_p_mask == min_p_mask, True, False)
+
+        label_masked_index = sorted_cls_p_index[keep_mask]
+        label_masked = cls_eye[keep_mask]
+
+        index += label_masked_index[:sample_size].tolist()
+        label += label_masked[:sample_size].tolist()
+
+    return np.array(label, dtype=dataType), np.array(index[:top_k], dtype=np.int64)
 
 
 def weaky_sl(model: MLP, basedata_x: np.ndarray, basedata_y: np.ndarray, unlabel_data: np.ndarray, lr: float, top_k: int, min_p: float, max_p: float):
-    model.train(basedata_x, basedata_y, lr=lr, epoche=3, batch=16)
+    model.train(basedata_x, basedata_y, lr=1e-2, epoch=1000, note_step=10)
+    print("预训练完成，进行标注")
 
     train_x: list = basedata_x.tolist()  # 训练数据转换为列表，方便添加内容
     train_y: list = basedata_y.tolist()
 
-    step = np.round(unlabel_data.shape[0] /
-                    top_k).astype(np.int64)  # 确保每个数据都能被训练
+    step = unlabel_data.shape[0] // top_k  # 确保每个数据都能被训练
     for i in range(step):
         fake_label_p = model.forward(unlabel_data)
-        model.z_cache.clear()
-        model.d_Lrelu_cache.clear()
         fake_label, fake_label_index = p_to_l(
             fake_label_p, top_k, min_p, max_p)
 
@@ -64,14 +92,12 @@ def weaky_sl(model: MLP, basedata_x: np.ndarray, basedata_y: np.ndarray, unlabel
         x = x[index]
         y = y[index]
 
-        model.train(x, y, 3, 3, lr)
+        model.train(x, y, epoch=20, lr=1e-4, batch=16, note_step=10)
 
     return model
 
 
 if __name__ == "__main__":
-    dataType = np.float16  # 设置存储和计算时使用的数据类型，可以节约内存，并提高计算速度
-
     base_data_x = np.array([
         [0, 0],
         [1, 0],
@@ -95,7 +121,7 @@ if __name__ == "__main__":
     mlp = MLP([input_dim, hide_dim, output_dim], dtype=dataType)
 
     mlp = weaky_sl(mlp, base_data_x, base_data_y,
-                   unlabel_x, 1e-4, 2, 0.6, 0.8)
+                   unlabel_x, 1e-4, 4, 0.0, 1.0)
 
     x_test = np.array([
         [2, 3],
