@@ -132,7 +132,7 @@ if __name__ == "__main__":
         [4, 5],
         [5, 5]
     ]).astype(dataType)
-    x_test = (x_test - x_test.min()) / (x_test.max() - x_test.min())
+    x_test = normal(x_test, x_test.min(), x_test.max())
 
     y_test = np.array([
         [0, 1],
