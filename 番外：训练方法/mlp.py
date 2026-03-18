@@ -16,7 +16,7 @@ class MLP:
         for i in range(self.layers_num - 1):
             w = (np.random.randn(self.layers_shape[i], self.layers_shape[i + 1]) * np.sqrt(
                 2 / self.layers_shape[i])).astype(self.dtype)  # He 初始化方法
-            b = np.zeros(self.layers_shape[i + 1]).astype(self.dtype)
+            b = np.zeros(self.layers_shape[i + 1], dtype=self.dtype)
             self.weight.append(w)
             self.biase.append(b)
 
@@ -40,7 +40,10 @@ class MLP:
         loss = np.mean(-ce_sum)
         return loss
 
-    def forward(self, x, alpha=0.01, train_status=False):
+    def forward(self, x: np.ndarray, alpha=0.01, train_status=False):
+        if x.dtype != self.dtype:
+            x = x.astype(self.dtype)
+
         z = x
         for i in range(self.layers_num - 1):
             z = np.dot(z, self.weight[i]) + self.biase[i]
@@ -81,7 +84,12 @@ class MLP:
 
             return 0
 
-    def train(self, x, y, step=sys.maxsize, note_step=1, lr=0.01, alpha=0.01, epoch=1, batch=sys.maxsize):
+    def train(self, x: np.ndarray, y: np.ndarray, step=sys.maxsize, note_step=1, lr=0.01, alpha=0.01, epoch=1, batch=sys.maxsize):
+        if x.dtype != self.dtype:
+            x = x.astype(self.dtype)
+        if y.dtype != self.dtype:
+            y = y.astype(self.dtype)
+
         x_input = x  # 存储原始输入，后续将其打乱
         y_input = y
         step_count = 0

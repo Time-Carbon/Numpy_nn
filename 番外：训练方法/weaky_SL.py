@@ -9,17 +9,18 @@ def normal(x, min, max):
     return norm
 
 
-def build_data(dataType, min, max):
+def build_data(min, max, data_size):
     '''
     生成未标注的数据
     '''
+    data_size = data_size // 2
     x_0 = np.random.uniform(min, max, size=(
-        100, 1)).astype(dataType)  # 构建异或为0的数据
-    x_0 = x_0 + np.zeros((x_0.shape[0], 2), dtype=dataType)
+        data_size, 1))  # 构建异或为0的数据
+    x_0 = x_0 + np.zeros((x_0.shape[0], 2))
 
     # 构建异或为1的数据(由于有去重和筛选环节，因此需要留出多余的数来确保经过这些操作后数据能到达和x_0同等规模)
     x_1 = np.random.uniform(min, max, size=(
-        np.round(1.1 * x_0.shape[0]).astype(np.int64), 2)).astype(dataType)
+        np.round(1.1 * x_0.shape[0]).astype(np.int64), 2))
     # 生成shape=(x_0的行数， 特征为2)的数据
     mask = x_1[:, 0] != x_1[:, 1]
     x_1 = x_1[mask]  # 取两个数不同的数组
@@ -95,7 +96,19 @@ def weaky_sl(model: MLP, basedata_x: np.ndarray, basedata_y: np.ndarray, unlabel
         x = x[index]
         y = y[index]
 
-        model.train(x, y, epoch=20, lr=1e-4, batch=16, note_step=10)
+        model.train(x, y, epoch=3, lr=1e-2, batch=32, note_step=10)
+
+    # 完成后继续训练
+    # print("标注完成，继续训练")
+    # x = np.array(train_x)
+    # y = np.array(train_y)
+
+    # index = np.random.permutation(x.shape[0])
+
+    # x = x[index]
+    # y = y[index]
+
+    # model.train(x, y, epoch=10, lr=1e-4, batch=32, note_step=10)
 
     return model
 
@@ -106,16 +119,16 @@ if __name__ == "__main__":
         [1, 0],
         [0, 1],
         [1, 1]
-    ], dtype=dataType)
+    ])
     base_data_y = np.array([
         # [标签0，标签1]
         [1, 0],
         [0, 1],
         [0, 1],
         [1, 0]
-    ], dtype=dataType)
+    ])
 
-    unlabel_x = build_data(dataType, -10, 10)
+    unlabel_x = build_data(-10, 10, 400)
 
     input_dim = base_data_x.shape[1]  # 输入层维度，即输入数据有多少个
     hide_dim = 4 * input_dim
@@ -124,14 +137,14 @@ if __name__ == "__main__":
     mlp = MLP([input_dim, hide_dim, output_dim], dtype=dataType)
 
     mlp = weaky_sl(mlp, base_data_x, base_data_y,
-                   unlabel_x, 1e-4, 4, 0.6)
+                   unlabel_x, 1e-4, 6, 0.7)
 
     x_test = np.array([
         [2, 3],
         [2, 2],
         [4, 5],
         [5, 5]
-    ]).astype(dataType)
+    ])
     x_test = normal(x_test, x_test.min(), x_test.max())
 
     y_test = np.array([
@@ -139,7 +152,7 @@ if __name__ == "__main__":
         [1, 0],
         [0, 1],
         [1, 0]
-    ]).astype(dataType)
+    ])
 
     print(y_test)  # 输出真实标签，方便我们后续对比
     print()
